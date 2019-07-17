@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -37,6 +38,10 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    if (n === 0) {
+      return [];
+    }
+    return n === undefined ? array[array.length - 1] : array.slice(-n);
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -45,6 +50,18 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        iterator(collection[i], i, collection);
+      }
+    } else {
+      var keys = Object.keys(collection);
+      for (var i = 0; i < keys.length; i++) {
+        iterator(collection[keys[i]], keys[i], collection);
+      }
+      
+    }
+    
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -66,18 +83,64 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+      var result = [];
+      for (var i = 0; i < collection.length; i++) {
+        if (test(collection[i])) {
+          result.push(collection[i]);
+        }
+      }
+      return result;
+    
   };
 
+    
+  // };
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
+    var result = [];
+    for (var i = 0; i < collection.length; i++) {
+      if (! _.filter(collection, test).includes(collection[i])) {
+        result.push(collection[i]);
+      }
+    }
+    return result;
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
-  };
+    var result = [];
+    var iteratedResult = [];
+    if (isSorted) {
+      for (var i = 0; i < array.length; i++) {
+        if (!iteratedResult.includes(iterator(array[i]) )) {
+          result.push(array[i]);
+          iteratedResult.push(iterator(array[i]));
 
+        }
+        
+        console.log(result);
+      }      
+
+    } else if (!isSorted || isSorted === undefined) { //works
+      for (var i = 0; i < array.length; i++) {
+        if (!result.includes(array[i])) {
+          result.push(array[i]);
+        }
+        console.log(result);
+      }
+    }
+    return result;    
+ 
+  };
+/*
+uniq_.uniq(array, [isSorted], [iteratee]) Alias: unique 
+Produces a duplicate-free version of the array, using === to test object equality. In particular only the first occurrence of each value is kept. If you know in advance that the array is sorted, passing true for isSorted will run a much faster algorithm. If you want to compute unique items based on a transformation, pass an iteratee function.
+
+_.uniq([1, 2, 1, 4, 1, 3]);
+=> [1, 2, 4, 3]
+*/
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
