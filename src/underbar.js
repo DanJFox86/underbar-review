@@ -83,13 +83,13 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
-      var result = [];
-      for (var i = 0; i < collection.length; i++) {
-        if (test(collection[i])) {
-          result.push(collection[i]);
-        }
+    var result = [];
+    for (var i = 0; i < collection.length; i++) {
+      if (test(collection[i])) {
+        result.push(collection[i]);
       }
-      return result;
+    }
+    return result;
     
   };
 
@@ -117,10 +117,7 @@
         if (!iteratedResult.includes(iterator(array[i]) )) {
           result.push(array[i]);
           iteratedResult.push(iterator(array[i]));
-
         }
-        
-        console.log(result);
       }      
 
     } else if (!isSorted || isSorted === undefined) { //works
@@ -128,13 +125,12 @@
         if (!result.includes(array[i])) {
           result.push(array[i]);
         }
-        console.log(result);
       }
     }
     return result;    
  
   };
-/*
+  /*
 uniq_.uniq(array, [isSorted], [iteratee]) Alias: unique 
 Produces a duplicate-free version of the array, using === to test object equality. In particular only the first occurrence of each value is kept. If you know in advance that the array is sorted, passing true for isSorted will run a much faster algorithm. If you want to compute unique items based on a transformation, pass an iteratee function.
 
@@ -147,6 +143,13 @@ _.uniq([1, 2, 1, 4, 1, 3]);
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var result = [];
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        result.push(iterator(collection[i], i, collection));
+      }
+    }
+    return result;
   };
 
   /*
@@ -188,7 +191,26 @@ _.uniq([1, 2, 1, 4, 1, 3]);
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    if (accumulator !== undefined) {
+      for (var i = 0; i < collection.length; i++) {
+        accumulator = iterator(accumulator, collection[i]);
+      }
+    } else {
+      accumulator = collection[0];
+      for (var i = 1; i < collection.length; i++) {
+        accumulator = iterator(accumulator, collection[i]);
+      }
+    }
+    return accumulator;
   };
+  
+//   reduce_.reduce(list, iteratee, [memo], [context]) Aliases: inject, foldl 
+// Also known as inject and foldl, reduce boils down a list of values into a single value. Memo is the initial state of the reduction, and each successive step of it should be returned by iteratee. The iteratee is passed four arguments: the memo, then the value and index (or key) of the iteration, and finally a reference to the entire list.
+
+// If no memo is passed to the initial invocation of reduce, the iteratee is not invoked on the first element of the list. The first element is instead passed as the memo in the invocation of the iteratee on the next element in the list.
+
+// var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
+// => 6
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
