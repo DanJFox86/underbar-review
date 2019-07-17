@@ -203,30 +203,54 @@ _.uniq([1, 2, 1, 4, 1, 3]);
     }
     return accumulator;
   };
-  
-//   reduce_.reduce(list, iteratee, [memo], [context]) Aliases: inject, foldl 
-// Also known as inject and foldl, reduce boils down a list of values into a single value. Memo is the initial state of the reduction, and each successive step of it should be returned by iteratee. The iteratee is passed four arguments: the memo, then the value and index (or key) of the iteration, and finally a reference to the entire list.
-
-// If no memo is passed to the initial invocation of reduce, the iteratee is not invoked on the first element of the list. The first element is instead passed as the memo in the invocation of the iteratee on the next element in the list.
-
-// var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
-// => 6
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
-        return true;
+    if (Array.isArray(collection)) {
+      return _.reduce(collection, function(wasFound, item) {
+        if (wasFound) {
+          return true;
+        }
+        return item === target;
+      }, false);      
+    } else {
+      var keys = Object.keys(collection);
+      for (var i = 0; i < keys.length; i++) {
+        if (collection[keys[i]] === target) {
+          return true;
+        }
       }
-      return item === target;
-    }, false);
+      return false;
+    }
+
   };
 
+  // _.reduce = function(collection, iterator, accumulator) {
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    // var isEvery = true;
+   
+    for (var i = 0; i < collection.length; i++) {
+      // isEvery = isEvery && iterator(collection[i]);
+      if (iterator !== undefined) {
+        if (!iterator(collection[i])) {
+          return false;   
+        }     
+      } else if (!collection[i]) {
+        return false;
+      }
+    }
+
+    return true;
+    
+    
+    // if (collection.length === 0) {
+    //   return true;
+    // }
+    // return _.reduce(collection, iterator);
     // TIP: Try re-using reduce() here.
   };
 
@@ -234,8 +258,18 @@ _.uniq([1, 2, 1, 4, 1, 3]);
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    for (var i = 0; i < collection.length; i++) {
+      // isEvery = isEvery && iterator(collection[i]);
+      if (iterator !== undefined) {
+        if (iterator(collection[i])) {
+          return true;   
+        }     
+      } else if (collection[i]) {
+        return true;
+      }
+    }
+    return false;
   };
-
 
   /**
    * OBJECTS
